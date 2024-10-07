@@ -484,7 +484,11 @@ class GulpQueryParameter(BaseModel):
     )
     rule: Union[str, dict, int, Any] = Field(
         None,
-        description="a rule according to type: str|SigmaRule for SIGMA_YAML (will be converted to RAW), dict for RAW (no conversion), dict(GulpQueryFilter) for GULP_FILTER, int for INDEX (an index of a stored query, no conversion).",
+        description="a rule according to type: an yaml str|SigmaRule for SIGMA_YAML, a dict for RAW (a raw query that needs no conversion), a dict(GulpQueryFilter) for GULP_FILTER, an int for INDEX (index of a stored query).",
+    )
+    sigma_references: Optional[list[str]] = Field(
+        None,
+        description='an optional list of additional sigma rule YAMLS referenced by "id" or "name" by rule, if type is GulpQueryType.SIGMA_YAML.',
     )
     name: str = Field(
         None,
@@ -531,6 +535,7 @@ class GulpQueryParameter(BaseModel):
             "name": self.name,
             "tags": self.tags,
             "rule": self.rule,
+            "sigma_references": self.sigma_references,
             "pysigma_plugin": self.pysigma_plugin,
             "plugin_params": (
                 self.plugin_params.to_dict() if self.plugin_params is not None else None
@@ -539,7 +544,7 @@ class GulpQueryParameter(BaseModel):
         return muty.dict.clear_dict(d)
 
     def __repr__(self) -> str:
-        return f"GulpQueryParameter(type={self.type}, rule={self.rule}, name={self.name}, tags={self.tags}, pysigma_plugin={self.pysigma_plugin}, plugin_params={self.plugin_params}, glyph_id={self.glyph_id})"
+        return f"GulpQueryParameter(type={self.type}, rule={self.rule}, sigma_references={self.sigma_references}, name={self.name}, tags={self.tags}, pysigma_plugin={self.pysigma_plugin}, plugin_params={self.plugin_params}, glyph_id={self.glyph_id})"
 
 
 # mandatory fields to be included in the result for queries

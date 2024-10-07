@@ -532,6 +532,7 @@ async def query_sigma_handler(
     ],
     ws_id: Annotated[str, Query(description=API_DESC_WS_ID)],
     sigma: Annotated[str, Body()],
+    sigma_references: Annotated[list[str], Body()] = None,
     pysigma_plugin: Annotated[
         str,
         Query(
@@ -545,6 +546,7 @@ async def query_sigma_handler(
 ) -> JSendResponse:
     gqp = GulpQueryParameter(
         rule=sigma,
+        sigma_references=sigma_references,
         type=GulpQueryType.SIGMA_YAML,
         pysigma_plugin=pysigma_plugin,
         plugin_params=plugin_params,
